@@ -43,6 +43,11 @@ function factory ($parse, $timeout) {
           }, 0)
         }
 
+        function formatInput (value, formatter) {
+          if ($attributes.ccFormat === 'false') { return input}
+          return formatter(value)
+        }
+
         if ($attributes.ccEagerType != null) {
           $scope.$watch($viewValue, function eagerTypeCheck (number) {
             number = card.parse(number)
@@ -57,7 +62,9 @@ function factory ($parse, $timeout) {
         }
 
         if ($attributes.ccFormat != null) {
-          ngModel.$formatters.unshift(card.format)
+          ngModel.$formatters.unshift(function(input) {
+            return formatInput(input, card.format);
+          })
           $element.on('input', function formatInput () {
             var input = $element.val()
             var previous = $viewValue()
@@ -76,7 +83,9 @@ function factory ($parse, $timeout) {
           })
         }
 
-        ngModel.$parsers.unshift(card.parse)
+        ngModel.$parsers.unshift(function(input) {
+          return formatInput(input, card.parse);
+        })
 
         ngModel.$validators.ccNumber = function validateCcNumber (number) {
           if ($attributes.ccNumber === 'false') { return null }
