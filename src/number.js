@@ -44,7 +44,7 @@ function factory ($parse, $timeout) {
         }
 
         function formatInput (value, formatter) {
-          if ($attributes.ccFormat === 'false') { return input}
+          if ($attributes.ccFormat === 'false') { return value }
           return formatter(value)
         }
 
